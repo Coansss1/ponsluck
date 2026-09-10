@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Ponsluck</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%23FF6A1A'/%3E%3C/svg%3E">
+<style>
+  :root{--bg:#FBF9F5;--panel:#F3EFE8;--line:#E3DDD2;--ink:#1A1916;--mute:#6E6960;--acc:#E85D12;--acc-soft:#FFE8DA}
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0F0F12;--panel:#17171C;--line:#26262E;--ink:#F1EEE7;--mute:#948F86;--acc:#FF7A2E;--acc-soft:#2A1A10}}
+  :root[data-theme="dark"]{--bg:#0F0F12;--panel:#17171C;--line:#26262E;--ink:#F1EEE7;--mute:#948F86;--acc:#FF7A2E;--acc-soft:#2A1A10}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{background:var(--bg)}
+  body{background:var(--bg);color:var(--ink);font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{width:min(720px,100% - 40px);margin:0 auto;padding:48px 0 72px}
+  .eyebrow{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--acc);font-weight:700}
+  h1{font-size:clamp(34px,6vw,52px);letter-spacing:-.035em;line-height:1.02;font-weight:900;margin:10px 0 14px;text-wrap:balance}
+  .lead{font-size:19px;color:var(--mute);max-width:60ch}
+  .meta{margin-top:18px;font-size:13px;color:var(--mute)}
+  h2{font-size:22px;letter-spacing:-.02em;font-weight:900;margin:44px 0 12px;padding-top:24px;border-top:1px solid var(--line)}
+  p{margin:0 0 12px;max-width:66ch}
+  p+p{margin-top:2px}
+  strong{font-weight:700}
+  .num{font-variant-numeric:tabular-nums}
+  ol,ul{margin:0 0 14px 22px;max-width:64ch}
+  li{margin-bottom:8px}
+  .flow{display:grid;gap:10px;margin:14px 0 18px}
+  .st{display:grid;grid-template-columns:52px 1fr;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;align-items:start}
+  .st b.t{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--acc);padding-top:3px}
+  .st div{font-size:15px}
+  table{border-collapse:collapse;width:100%;margin:10px 0 18px;font-size:15px}
+  th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);font-weight:700}
+  td.k{font-weight:700;white-space:nowrap}
+  .tbl{overflow-x:auto}
+  .risk{border-left:3px solid var(--acc);padding:2px 0 2px 14px;margin:0 0 14px}
+  .risk b{display:block}
+  .risk span{color:var(--mute)}
+  .cta{display:inline-block;background:var(--acc);color:#fff;text-decoration:none;font-weight:700;padding:12px 18px;border-radius:10px;margin:6px 0 4px}
+  .cta:hover{filter:brightness(1.08)}
+  .done{display:grid;gap:8px;margin:12px 0 18px}
+  .done div{display:grid;grid-template-columns:22px 1fr;gap:10px;font-size:15px}
+  .done i{font-style:normal;color:var(--acc);font-weight:900}
+  .quiet{color:var(--mute);font-size:14px}
+  a{color:var(--acc)}
+  @media (max-width:520px){.st{grid-template-columns:1fr;gap:4px}}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <div class="eyebrow">Overview · 7 Sep 2026</div>
+  <h1>Ponsluck: the pot that buys one meme coin every hour</h1>
+  <p class="lead">An on-chain game for the meme coins on Pons, on Robinhood Chain. Anyone puts ETH behind the coin they want. Every hour one coin is drawn, the pot buys it, and the people who backed it split the tokens.</p>
+  <p class="meta">Written by me with the mechanics already decided. Nothing here is just an idea without a decision behind it, and whatever is still open is marked as open.</p>
+
+  <h2>Where it comes from</h2>
+  <p>On 19 August a German dev launched outbid.lol: a public leaderboard where you pay to move up, and nothing else. It made 255 thousand dollars in a week. In the next 49 hours 502 copies appeared, and the median copy made 21 dollars. The 27 crypto copies made 472 dollars combined.</p>
+  <p>What I took from it: "pay to rank" is dead, the money disappears and there is no reason to come back. But a site that lives off coins competing for attention is not dead, if the money goes back to the people playing. That is what Ponsluck changes.</p>
+
+  <h2>How one hour works</h2>
+  <div class="flow">
+    <div class="st"><b class="t">00:00</b><div>The round opens. Any wallet can put ETH (or PONS) behind any coin launched on Pons. Holders, creators, anyone. No minimum market cap, no cap per coin.</div></div>
+    <div class="st"><b class="t">live</b><div>The board shows every coin with what it has in the pot and its odds, which are simply its share of the pot. 1 ETH in a 4 ETH pot is a 25% chance. No tickets, no hidden formulas.</div></div>
+    <div class="st"><b class="t">59:59</b><div>The round closes. If the pot is under 0.1 ETH there is no draw and everything rolls into the next hour, so the pot grows through dead hours.</div></div>
+    <div class="st"><b class="t">draw</b><div>One coin comes out. Randomness is commit-reveal: I publish the hash of the seed before the hour, reveal it after, mixed with the hash of a future block. If I do not reveal within N blocks, anyone can make the contract refund the pot. The worst the house can do is abort a round, never pick the winner.</div></div>
+    <div class="st"><b class="t">buy</b><div>90% of the pot buys the winning coin on Pons.</div></div>
+    <div class="st"><b class="t">delivery</b><div>The tokens sit in the contract for the wallets that backed that coin to claim, in proportion to what they put in. Only the backers. Holders who did not back it still gain from the buy pushing the price.</div></div>
+  </div>
+
+  <h2>Where the money goes</h2>
+  <div class="tbl"><table>
+    <tr><th>Share</th><th>Destination</th><th>Why</th></tr>
+    <tr><td class="k num">90%</td><td>buys the winning coin, split between the people who backed it</td><td>it is the prize, and it is what makes the coin communities show up on their own</td></tr>
+    <tr><td class="k num">5%</td><td>buys PONS and burns it</td><td>puts Pons on our side instead of competing with us, and fits the story PONS already has (almost 30% of supply burned)</td></tr>
+    <tr><td class="k num">2%</td><td>buys PONS, kept in the treasury</td><td>my bet on Pons growing</td></tr>
+    <tr><td class="k num">3%</td><td>ETH to the treasury</td><td>my cash revenue</td></tr>
+  </table></div>
+  <p>Coin creators get no cut from us because Pons already pays them: every buy the pot makes pays the creator tax they set at launch (up to 10%, all of it theirs) plus their share of the curve fee. The higher the tax they set, the more each win pays them. That is the argument for them to send their communities to back their coin.</p>
+  <p class="quiet">The maths for a player: the expected value of any bet is 90% of what you put in, whichever coin you pick. The coin you choose does not change your odds of making money, it changes where the buy lands. It is a fair lottery with a 10% rake, and the prize is paid in meme coins. I know what this is, and the "back your coin" wrapper is exactly that, a wrapper.</p>
+
+  <h2>Why anyone would play</h2>
+  <p>The first question anyone asks, and the right one. Two sides to it.</p>
+  <p><strong>Why a person would put ETH in</strong></p>
+  <ul>
+    <li><strong>It is a better gamble than what they already do.</strong> The people on Pons buy random new launches where snipers, bundlers and a creator tax of up to 10% eat them, and the median coin is down 85% a day later. Ponsluck is a 10% rake with the odds printed on the screen. For a degen that is a fair deal, and it is honest to say it that way.</li>
+    <li><strong>It is leverage on a coin you already hold.</strong> This is the strongest reason. If you hold $BUN and back it with 0.05 ETH, you have a shot at the whole pot buying $BUN with everyone else's money. The bet itself returns 90%, but the pump on your bag is paid by others. The simulator confirmed it: small bet plus existing bag is the one positive-EV position in the game. Holders are the core user, not gamblers.</li>
+    <li><strong>It is a thing to do every hour.</strong> Meme communities die of boredom between pumps. A countdown, live odds, and "we are at 40% with 12 minutes left" gives the Telegram a reason to be alive 24 times a day.</li>
+  </ul>
+  <p><strong>Why a project would push its community</strong></p>
+  <ul>
+    <li><strong>They get paid every time they win.</strong> The pot's buy pays the creator tax like any buy. A 2 ETH pot into a coin with 5% tax is 0.09 ETH straight to the creator, for free, plus the curve fee share. No other marketing pays them to be marketed.</li>
+    <li><strong>A win is a marketing event they did not have to buy.</strong> A visible buy on the chart, a post with their logo, the coin appearing in "recent buys" on Pons and in the GMGN feed. Today they pay KOLs for less.</li>
+    <li><strong>A community can effectively buy its own coin through the pot with upside.</strong> If the holders of $X put in most of the pot, they get most of the tokens back anyway, and whatever outsiders put in is a bonus. For a community that was going to buy anyway, backing through the pot is the same buy with a chance of extra.</li>
+  </ul>
+  <p class="quiet">Said plainly: a neutral person with no bag and no taste for gambling has no reason to play, and nobody comes for a mechanism. They come for the story of the first coin that won a real pot. That is why the first pots get seeded and the first communities are arranged before launch.</p>
+
+  <h2>The bull case</h2>
+  <p>The board is a signal. A coin with a lot of people putting ETH behind it is a coin with a community that is investing for real, and today you cannot see that anywhere, you only see volume and market cap, which any bot can fake. I think Ponsluck can become the place where people start to get a sense of which coins can win, because they are watching who believes and how much they put, every hour, with real money. For small memes with a real community it is visibility they would never get.</p>
+  <p>Every hour there is a winner, a buy happening, and a tx to share. It is content that generates itself, 24 times a day, and every community has a reason to share theirs.</p>
+  <p>And Pons. Burning PONS in every pot puts us on their side from day one. The plan is to talk to them after we are live so they support the project: distribution, and contributions to the pots without backing any specific coin. For that there is a contribution without a coin, a pot sponsorship, which does not count towards the odds and goes entirely to whoever backed the winner. It works for Pons, for creators who want to heat up their hour, and for me to seed the first pots without a conflict.</p>
+
+  <h2>The biggest problems in the mechanism, and what I decided</h2>
+  <p>In order of what worries me most. The first three decide whether this lives.</p>
+  <div class="risk"><b>Nobody shows up</b><span>The mechanism brings nobody, it only keeps whoever arrives. outbid made 255k because one tweet caught fire; the copies with the identical mechanism made 21 dollars. This lives or dies in the first 48 hours, and that is distribution: the Robinhood Chain trenches groups, two or three creators sending their communities, and Pons. I seed the first pots myself, otherwise the first person arrives, sees 0.00 ETH and leaves. And Robinhood Chain is small: even going well, it is pots of 0.1 to 0.5 ETH for weeks.</span></div>
+  <div class="risk"><b>Custody</b><span>The contract holds other people's money during the hour. There is no hot wallet of ours with a pot, the bot's wallet only holds gas, and the admin keys can only pause, never withdraw. The contract does not go to mainnet without a review by someone who has done this before. It is the point that worries me most and where I will ask professionals for help.</span></div>
+  <div class="risk"><b>Whales buying their own coin with other people's ETH</b><span>Someone who puts 10 ETH in a 12 ETH pot has an 83% chance of winning and gets 83% of the tokens, and the other 2 ETH buy their coin. I decided not to cap it: odds proportional to money is the most honest rule and a whale in a pot is the best marketing there is. The defence is the board showing the odds live, nobody walks in blind.</span></div>
+  <div class="risk"><b>Tiny coins</b><span>A 2 ETH pot into a coin with a 5 thousand dollar market cap buys at three times the price. No threshold, because it limited too much and coins on the edge would float in and out during the draw. Instead: a clear warning on the site, and vesting of the delivery once there is volume.</span></div>
+  <div class="risk"><b>Pons copies it</b><span>If it works, they own the whole audience. The answer is being useful to PONS from the first pot (the burn) and talking to Ozzy after we are live, not before.</span></div>
+  <div class="risk"><b>Legal</b><span>Paying for a chance at a prize is gambling. I decided it is a problem to solve once there is traction, not before.</span></div>
+
+  <h2>What is already done</h2>
+  <div class="done">
+    <div><i>✓</i><span>Research on outbid and the clone wave, with the numbers above.</span></div>
+    <div><i>✓</i><span>Mechanics decided, including the economics and the answer to each risk.</span></div>
+    <div><i>✓</i><span>First look of the site, with 40 real Pons coins (logos, prices, market caps from 5 Sep). Backers, draws and buys are simulated in the browser. There is a button to skip to the draw and watch the buy and the split happen.</span></div>
+    <div><i>✓</i><span>The Pons contracts read on-chain and proven in a fork of mainnet: a contract can buy on the curve, on a graduated pool, and through the two-hop routes for coins paired with tokenized stocks. Seven tests passing.</span></div>
+    <div><i>✓</i><span>A battle test of the mechanism: an adversarial simulator over 40 thousand rounds plus a hand review of the contract. See the update below.</span></div>
+  </div>
+  <a class="cta" href="https://coansss1.github.io/ponsluck/" target="_blank" rel="noopener">See the first look</a>
+
+  <h2>Update after the battle test (7 Sep)</h2>
+  <p>Three things the simulator found that change the design. They are decisions I still have to take, so read them as proposals.</p>
+  <ul>
+    <li><strong>Buy atomically at the reveal, not in slices.</strong> I had planned to buy the winner in 10 slices over 10 minutes. Once the winner is known, a bot can buy before the slices and sell after: it takes 27% to 57% of the pot, straight from the winners. And slices do not even improve the price on a bonding curve. So the reveal and the whole buy happen in the same transaction.</li>
+    <li><strong>Deliver in slices instead.</strong> Winners get their tokens in 4 parts over 4 hours, so nobody dumps at the peak and the coin does not fall straight after every win.</li>
+    <li><strong>A bond for the house.</strong> Without a cost for not revealing, the house could abort every round where a friend's coin lost and retry until it won (4 aborts on average with a 20% share). The contract will hold a bond from the house that gets slashed to the backers if the seed is not revealed, plus a public abort counter.</li>
+  </ul>
+  <p>What held up: the fair lottery (0.88 expected value per ETH after fees and slippage), sybil wallets and last-second sniping gain nothing, a whale dominating the pot loses money, and creators backing their own coin play for free because of their Pons tax, which is what we want.</p>
+
+  <h2>What comes next</h2>
+  <ol>
+    <li>Ponsluck contract in Solidity with tests on a fork of Robinhood Chain: back, draw, atomic buy, claim with vesting, fees, rollover, refund, bond.</li>
+    <li>Review of the contract by someone who has put other people's money in a contract before. Without it, no mainnet.</li>
+    <li>The real site connected to the contract, wallet connect, everything verifiable in the explorer.</li>
+    <li>I seed the first pots, and only then talk to Pons so they support the project: distribution and pot sponsorship without backing any coin.</li>
+  </ol>
+  <p class="quiet">Step 1 starts this week. Step 2 depends on who reviews. I am not putting dates on the rest because they do not depend only on me.</p>
+
+  <h2>What I would like from you</h2>
+  <p>Look at the mechanism as someone trying to break it. Where does a rational player win at the expense of the others in a way I have not seen? Does the 90/7/3 economics make sense or is it badly calibrated? And if you know someone to review the contract, that is the piece I am missing.</p>
+  <p>No rush and no pressure. If you do not feel like it, do not look.</p>
+</div>
+
+</body>
+</html>
