@@ -100,6 +100,14 @@
   footer{margin-top:auto;padding:36px 0 28px;border-top:1px solid var(--line);color:var(--mute);font-size:12px;line-height:1.6}
   footer .wrap{display:grid;gap:8px}
 
+  .help{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;border:1px solid var(--mute);color:var(--mute);background:none;font:inherit;font-size:11px;font-weight:800;cursor:pointer;margin-left:6px;vertical-align:1px;line-height:1}
+  .help:hover,.help.on{border-color:var(--acc);color:var(--acc)}
+  .pop{position:absolute;z-index:60;width:min(380px,calc(100vw - 32px));background:#141418;border:1px solid var(--acc);border-radius:14px;padding:16px 18px;box-shadow:0 20px 50px rgba(0,0,0,.6);display:none}
+  .pop.on{display:block}
+  .pop h4{font-size:15px;font-weight:900;letter-spacing:-.01em;margin-bottom:8px}
+  .pop h5{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--acc);margin:12px 0 4px}
+  .pop p{font-size:13.5px;color:#C9C5BB;line-height:1.5}
+  .pop .x{position:absolute;top:10px;right:12px;background:none;border:0;color:var(--mute);font-size:16px;cursor:pointer}
   .ov{position:fixed;inset:0;background:rgba(0,0,0,.76);display:none;align-items:center;justify-content:center;padding:16px;z-index:50}
   .ov.on{display:flex}
   .modal{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:22px;width:min(440px,100%)}
@@ -151,27 +159,27 @@
 <header class="wrap">
   <div class="logo"><i></i>TRIBUTE</div>
   <div class="pill">Robinhood Chain · Pons</div>
-  <div class="cut">your CUT: <b class="num" id="myCut">0</b> <span class="pill gold">preview · simulated</span></div>
+  <div class="cut">your CUT: <b class="num" id="myCut">0</b><button class="help" data-help="mycut">?</button> <span class="pill gold">preview · simulated</span></div>
 </header>
 
 <main class="wrap">
   <div class="top">
     <div class="card">
-      <div class="lbl">the pot · this round</div>
+      <div class="lbl">the pot · this round<button class="help" data-help="pot">?</button></div>
       <div class="big num" id="pot">0.000 ETH</div>
       <div class="sub num" id="potSub">$0 · needs 0.5 ETH for the Nod</div>
       <div class="bar"><i id="potBar"></i></div>
-      <div class="mini"><span>round ends in <b class="num" id="cd">00:00</b></span><span><b class="num" id="nCoins">0</b> coins</span><span><b class="num" id="nBackers">0</b> wallets</span><span>rolled <b class="num" id="rolls">0</b>x</span></div>
-      <div class="acts"><button class="btn ghost tiny" id="envelope">add to the Envelope</button><span class="hero skip" style="align-self:center">preview: <button class="btn ghost tiny" id="skip">give the Nod now</button></span></div>
+      <div class="mini"><span>round ends in <b class="num" id="cd">00:00</b><button class="help" data-help="nod">?</button></span><span><b class="num" id="nCoins">0</b> coins</span><span><b class="num" id="nBackers">0</b> wallets</span><span>rolled <b class="num" id="rolls">0</b>x</span></div>
+      <div class="acts"><button class="btn ghost tiny" id="envelope">add to the Envelope</button><button class="help" data-help="envelope">?</button><span class="hero skip" style="align-self:center">preview: <button class="btn ghost tiny" id="skip">give the Nod now</button></span></div>
     </div>
     <div class="card score">
-      <div class="lbl">the Score</div>
+      <div class="lbl">the Score<button class="help" data-help="score">?</button></div>
       <div class="big num" id="score">0.000 ETH</div>
       <div class="sub">1 in 100 chance every Nod. Fires 80% to that round's winners, keeps 20% as the floor.</div>
       <div class="mini"><span>fed by <b>2%</b> of every pot</span><span>last fired <b id="scoreLast">never</b></span></div>
     </div>
     <div class="card">
-      <div class="lbl">CUT points · epoch <span id="epoch">1</span></div>
+      <div class="lbl">CUT points · epoch <span id="epoch">1</span><button class="help" data-help="cut">?</button></div>
       <div class="big num" id="emission">100</div>
       <div class="sub">CUT per ETH of tribute this epoch. Halves every 1,000 ETH wagered.</div>
       <div class="mini"><span>wagered all-time <b class="num" id="wagered">0.0 ETH</b></span><span>to next halving <b class="num" id="toHalve">1,000 ETH</b></span></div>
@@ -193,15 +201,15 @@
   <section>
     <h2>How it works</h2>
     <div class="how">
-      <div class="step"><div class="n">1 · tribute</div><h3>Put ETH behind any Pons coin.</h3><p>Holders, creators, anyone. A coin's odds are its share of the pot: 1 ETH in a 4 ETH pot is 25%. No cap. Pay in ETH or PONS.</p></div>
-      <div class="step"><div class="n">2 · the Nod</div><h3>Every 10 minutes, if the pot is 0.5 ETH or more.</h3><p>Below that, the round rolls over and the pot keeps growing. The coin is picked by a drand beacon, verified on-chain in the same transaction that buys it. Nobody can predict it, nobody can wait for it.</p></div>
-      <div class="step"><div class="n">3 · the take</div><h3>The pot buys the coin. Its backers split the tokens.</h3><p>Bought in one shot at the Nod, so no bot can front-run it. Tokens unlock in 4 parts over 4 hours. Only the wallets that paid tribute to that coin get them, pro-rata.</p></div>
-      <div class="step"><div class="n">4 · your CUT</div><h3>Every ETH of tribute mines CUT. Win or lose.</h3><p>Points, pro-rata to what you put in. The Envelope counts too. CUT points convert 1:1 to $CUT at TGE. No presale, no team allocation. Hold CUT, get a taste of every round in ETH.</p></div>
+      <div class="step"><div class="n">1 · tribute</div><h3>Put ETH behind any Pons coin.</h3><p>You are not buying the coin. You are paying tribute to it: your ETH goes into a shared pot, and your coin's chance of winning is its share of that pot. 1 ETH in a 4 ETH pot is 25%. Anyone can do it, for any coin, in ETH or PONS.</p></div>
+      <div class="step"><div class="n">2 · the Nod</div><h3>Every 10 minutes, if the pot is 0.5 ETH or more.</h3><p>When the round closes, one coin is drawn with the odds on the board. The number that picks it comes from drand, a public randomness network, and is verified on-chain in the same transaction that buys the coin. If the pot is too small, nothing happens and it carries over.</p></div>
+      <div class="step"><div class="n">3 · the take</div><h3>The pot buys the coin. Its backers split the tokens.</h3><p>86% of the pot market-buys the winning coin on Pons, all at once, so no bot can get in front of it. The tokens go to the wallets that paid tribute to that coin, pro-rata, unlocking in 4 parts over 4 hours. Everyone else's tribute is what paid for that buy.</p></div>
+      <div class="step"><div class="n">4 · your CUT</div><h3>Every ETH of tribute mines CUT. Win or lose.</h3><p>CUT is the game's token, and the only way to get it is to play: points pro-rata to the ETH you put in, with early tribute mining more. At TGE, points become $CUT one for one. Lock it and you receive 5% of every pot in ETH, forever. No presale, no team allocation.</p></div>
     </div>
     <div class="split">
       <div><b class="num">88%</b><span>buys the winning coin for its backers</span></div>
-      <div><b class="num">5%</b><span>the taste: ETH to locked CUT, every round</span></div>
-      <div><b class="num">4%</b><span>the Family's cut: buys PONS and burns it</span></div>
+      <div><b class="num">5%</b><span>the taste: ETH to locked CUT, every round<button class="help" data-help="taste">?</button></span></div>
+      <div><b class="num">4%</b><span>the Family's cut: buys PONS and burns it<button class="help" data-help="family">?</button></span></div>
       <div><b class="num">3%</b><span>treasury</span></div>
     </div>
     <div class="rules">
@@ -224,6 +232,7 @@
   <div>Not affiliated with Pons or Robinhood. No actual crimes were committed. Not financial advice.</div>
 </div></footer>
 
+<div class="pop" id="pop"><button class="x" id="popX">×</button><div id="popBody"></div></div>
 <div class="ov" id="mod"><div class="modal">
   <h3><img id="mImg" alt=""><span id="mTitle">Pay tribute</span></h3>
   <label>coin</label>
@@ -238,7 +247,7 @@
 </div></div>
 
 <div class="ov" id="drawOv"><div class="modal draw">
-  <div class="lbl">the Nod · the pot</div>
+  <div class="lbl">the Nod · the pot<button class="help" data-help="drand">?</button></div>
   <div class="pv num" id="dPot"></div>
   <div class="wheel"><div class="strip" id="strip"></div></div>
   <div class="win-name" id="dName"></div>
@@ -310,7 +319,7 @@ function render(){
   $('wagered').textContent = wagered.toFixed(1) + ' ETH'; $('toHalve').textContent = (HALVING_ETH - (wagered % HALVING_ETH)).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',') + ' ETH';
   $('myCut').textContent = Math.round(myCut).toLocaleString('en-US');
   const rows = Object.entries(round.contribs).sort((a,b)=>b[1]-a[1]);
-  let h = '<div class="row head"><div>#</div><div>coin</div><div>tribute</div><div>odds</div><div class="mc">mcap</div><div class="r">&nbsp;</div></div>';
+  let h = '<div class="row head"><div>#</div><div>coin</div><div>tribute<button class="help" data-help="tribute">?</button></div><div>odds<button class="help" data-help="odds">?</button></div><div class="mc">mcap</div><div class="r">&nbsp;</div></div>';
   rows.forEach(([sym,eth],i) => { const c = bySym[sym];
     h += `<div class="row${you.has(sym)?' you':''}" data-sym="${sym}"><div class="rk num">${i+1}</div>
       <div class="coin"><img src="${c.logo}" alt=""><div><div class="sy">$${c.symbol}</div><div class="fn">${c.name}${allTime[sym]?' · took '+allTime[sym].toFixed(2)+' ETH':''}</div></div></div>
@@ -392,6 +401,39 @@ $('mGo').onclick = () => { const c = bySym[$('mCoin').value]; const v = parseFlo
 document.addEventListener('click', e => { const b = e.target.closest('[data-add]'); if (b) openMod(b.dataset.add); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') $('mod').classList.remove('on'); });
 
+const HELP = {
+  pot: ['The pot', 'What it is', 'All the ETH paid as tribute this round, behind every coin, plus whatever is in the Envelope.', 'What happens to it', 'At the Nod, 2% goes into the Score and 12% is the fee (5% taste, 4% Family\'s cut, 3% treasury). The remaining 86% buys the winning coin on Pons in one transaction.', 'Right now', 'If the pot is under 0.5 ETH when the round ends, there is no Nod: everything carries into the next 10 minutes and keeps growing until it is big enough to matter.'],
+  nod: ['The Nod', 'What it is', 'The draw. Every 10 minutes, if the pot is 0.5 ETH or more, the Family nods to one coin. A coin\'s chance is its share of the pot: a coin with 25% of the tribute has a 25% chance.', 'How it is picked', 'A drand beacon, a public randomness network, publishes a number nobody controls. The contract verifies it on-chain in the same transaction that buys the coin. Nobody can predict it, nobody can wait for it, nobody can rig it, including us.', 'Right now', 'The timer shows when this round closes. If the pot is still short, it rolls over.'],
+  score: ['The Score', 'What it is', 'A bonus ETH pool that grows every round: 2% of each pot goes in before anything else.', 'How it pays', 'Each Nod has a 1 in 100 chance of firing it. When it fires, 80% of the Score is paid in ETH to the wallets that backed that round\'s winning coin, on top of their tokens. 20% stays as the floor, so it never starts from zero.', 'Right now', 'The number on the card is the pool today. The odds never change, only the size of the payout.'],
+  cut: ['CUT points', 'What they are', 'Every ETH of tribute mines CUT, win or lose, pro-rata to what you put in. The Envelope counts too. Picking the right coin changes nothing here: CUT measures how much you feed the game.', 'Epochs', 'The emission per ETH halves every 1,000 ETH wagered in total. Early tribute mines two to four times more CUT per ETH than tribute a month later.', 'Then what', 'CUT points convert 1:1 to the $CUT token at TGE. No presale, no team allocation, nothing minted outside the game.'],
+  mycut: ['Your CUT', 'What it is', 'The CUT points this wallet has mined so far, from every tribute and every Envelope you paid. It only goes up.', 'What it becomes', 'At TGE, 1 point = 1 $CUT. Lock $CUT and you get a taste of every round in ETH, for as long as it is locked.'],
+  envelope: ['The Envelope', 'What it is', 'ETH added to the pot behind no coin. It counts for nobody\'s odds and it goes entirely to the wallets that backed the winning coin.', 'Who uses it', 'Pons, if they want to feed the game without picking favourites. Creators who want to heat up their coin\'s round. Us, to seed the first pots. Anyone who wants a bigger take without a bet.', 'And CUT', 'The Envelope mines CUT like any tribute.'],
+  tribute: ['Tribute', 'What it is', 'The ETH you put behind a coin this round. Any coin launched on Pons, on the curve or graduated. Pay in ETH or in PONS.', 'What you get', 'If your coin gets the Nod, you split the tokens the pot buys with the other wallets behind it, pro-rata to your tribute. Whatever happens, you mine CUT.', 'What you do not get', 'Nothing is refunded. If another coin gets the Nod, your tribute went into buying it for its backers. That is the game.'],
+  odds: ['Odds', 'What it is', 'This coin\'s share of all tribute this round. The Nod picks a coin with exactly these odds: 30% of the pot means a 30% chance.', 'No cap', 'A whale can take 80% of the odds by paying 80% of the tribute. The board shows it live, so nobody walks in blind.', 'The maths', 'Whichever coin you pick, the expected value of your tribute is the same: 86% of it comes back as tokens on average. Picking a coin you already hold is how you get more than that, because the buy pushes your bag.'],
+  taste: ['The taste', 'What it is', '5% of every pot, paid in ETH to the wallets that have $CUT locked, every round, pro-rata to how much and how long they locked.', 'Why it matters', 'It is what gives $CUT a reason to exist: the token is a claim on the fees of the game. Unlocked CUT gets nothing.', 'When', 'From TGE on. Until then, the 5% accrues to the first lockers.'],
+  family: ['The Family\'s cut', 'What it is', '4% of every pot buys PONS on the market and sends it to the burn address. Gone forever.', 'Why', 'The game lives on Pons. Every round makes PONS scarcer, so Pons has a reason to want this to work, and PONS holders get paid by every Nod without playing.', 'Verifiable', 'Every burn is a transaction. The Hall of Nods links each one.'],
+  drand: ['How the randomness works', 'drand', 'A network of independent organisations publishes a new random number every few seconds, signed so it cannot be faked. The contract waits for the beacon that comes after the round closes.', 'Verified on-chain', 'The contract checks the signature itself, in the same transaction that buys the coin. No seed we hold, no reveal we could skip, no block hash a sequencer could nudge.', 'What it means for you', 'Nobody, including us, knows the coin before the chain does. The buy happens in that same block, so no bot can get in front of it.'],
+};
+let popFor = null;
+function showHelp(btn){
+  const h = HELP[btn.dataset.help]; if (!h) return;
+  const pop = $('pop'); let html = `<h4>${h[0]}</h4>`;
+  for (let i = 1; i < h.length; i += 2) html += `<h5>${h[i]}</h5><p>${h[i+1]}</p>`;
+  $('popBody').innerHTML = html;
+  document.querySelectorAll('.help.on').forEach(b => b.classList.remove('on')); btn.classList.add('on'); popFor = btn;
+  pop.classList.add('on');
+  const r = btn.getBoundingClientRect(); const w = pop.offsetWidth;
+  let left = r.left + window.scrollX - 8; if (left + w > window.scrollX + window.innerWidth - 16) left = window.scrollX + window.innerWidth - 16 - w; if (left < 16) left = 16;
+  pop.style.left = left + 'px'; pop.style.top = (r.bottom + window.scrollY + 8) + 'px';
+}
+function hideHelp(){ $('pop').classList.remove('on'); document.querySelectorAll('.help.on').forEach(b => b.classList.remove('on')); popFor = null; }
+document.addEventListener('click', e => {
+  const b = e.target.closest('.help');
+  if (b){ e.preventDefault(); e.stopPropagation(); if (popFor === b) hideHelp(); else showHelp(b); return; }
+  if (!e.target.closest('#pop')) hideHelp();
+});
+$('popX').onclick = hideHelp;
+document.addEventListener('keydown', e => { if (e.key === 'Escape') hideHelp(); });
 $('mImg').src = COINS[0].logo;
 seedHistory(); seedRound(12, 0.01, 0.18); wagered += 640; render(); tickClock();
 setInterval(tickClock, 1000);
