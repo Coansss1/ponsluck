@@ -97,6 +97,21 @@
   .win .s{font-weight:900;margin-top:2px}
   .win .a{font-size:13px;color:var(--acc2)}
 
+  .books{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:14px}
+  .books div{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+  .books b{display:block;font-size:24px;font-weight:900;letter-spacing:-.03em;white-space:nowrap}
+  .books span{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+  .ledger{margin-top:14px;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--panel)}
+  .ledger .tw{overflow-x:auto}
+  .ledger table{border-collapse:collapse;width:100%;min-width:760px;font-size:13px}
+  .ledger th{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);text-align:left;padding:10px 14px;background:#0e0e11;font-weight:700}
+  .ledger td{padding:10px 14px;border-top:1px solid var(--line);white-space:nowrap}
+  .ledger td.c{display:flex;align-items:center;gap:8px;font-weight:900}
+  .ledger td.c img{width:22px;height:22px;border-radius:6px;object-fit:cover;background:#222}
+  .ledger td.mono{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--mute)}
+  .ledger td.sc{color:var(--acc);font-weight:900}
+  .ledger tr.roll td{color:var(--mute);font-style:italic}
+  @media (max-width:900px){.books{grid-template-columns:1fr 1fr}}
   footer{margin-top:auto;padding:36px 0 28px;border-top:1px solid var(--line);color:var(--mute);font-size:12px;line-height:1.6}
   footer .wrap{display:grid;gap:8px}
 
@@ -222,8 +237,22 @@
   </section>
 
   <section>
-    <h2>Past Nods <small id="histLbl"></small></h2>
-    <div class="hist" id="hist"></div>
+    <h2>The Books <small>the Family's ledger · every number is a transaction</small><button class="btn ghost tiny" id="flex" style="margin-left:auto">flex these stats</button></h2>
+    <div class="books">
+      <div><b class="num" id="bVol">0 ETH</b><span>total tribute</span></div>
+      <div><b class="num" id="bTaste">0 ETH</b><span>taste paid to CUT</span></div>
+      <div><b class="num" id="bScore">0 ETH</b><span>Score paid out</span></div>
+      <div><b class="num" id="bFired">0</b><span>Scores fired</span></div>
+      <div><b class="num" id="bBurn">0 ETH</b><span>PONS bought and burned</span></div>
+      <div><b class="num" id="bBought">0 ETH</b><span>coins bought for backers</span></div>
+      <div><b class="num" id="bCut">0</b><span>CUT mined · of 1,000,000</span></div>
+      <div><b class="num" id="bNods">0</b><span>nods · <span id="bRolls">0</span> rollovers</span></div>
+    </div>
+    <div class="ledger"><div class="tw"><table>
+      <thead><tr><th>nod</th><th>block</th><th>coin</th><th>wallets</th><th>tribute</th><th>bought</th><th>score</th><th>drand</th><th>time</th></tr></thead>
+      <tbody id="ledger"></tbody>
+    </table></div></div>
+    <div class="hist" id="hist" hidden></div><span id="histLbl" hidden></span>
   </section>
 </main>
 
@@ -332,6 +361,12 @@ function render(){
   $('rest').innerHTML = rest.length ? `<div class="lbl" style="width:100%;margin:6px 0 2px">${rest.length} more on Pons, nobody behind them yet</div>` + rest.slice(0,24).map(c => `<div class="chip" data-add="${c.symbol}"><img src="${c.logo}" alt="">$${c.symbol}</div>`).join('') : '';
   $('feed').innerHTML = round.events.slice(0,8).map(e => `<div class="ev"><span class="tm">${hhmm(e.t)}</span><span><b>${fmtE(e.eth)}</b> → <b>${e.sym?'$'+e.sym:'the Envelope'}</b> by ${e.you?'<b style="color:var(--acc)">you</b>':short(e.who)}</span></div>`).join('') || '<div class="ev">quiet for now</div>';
   $('hist').innerHTML = history.slice().reverse().map(w => { const c = bySym[w.sym]; return `<div class="win${w.score?' score':''}"><img src="${c.logo}" alt=""><div><div class="h">${hhmm(w.t)}${w.score?' · THE SCORE FIRED':''}</div><div class="s">$${w.sym}</div><div class="a num">${fmtE(w.buy)} · ${fmtTok(w.tokens)} to ${w.backers} wallet${w.backers>1?'s':''}${w.score?' · +'+fmtE(w.score)+' Score':''}</div></div></div>`; }).join('');
+  const firedN = history.filter(w=>w.score).length, cutMined = Math.round(wagered*BASE_EMISSION*0.7);
+  $('bVol').textContent = wagered.toFixed(1)+' ETH'; $('bTaste').textContent = (history.reduce((a,w)=>a+w.pot*TASTE,0)).toFixed(3)+' ETH';
+  $('bScore').textContent = history.reduce((a,w)=>a+w.score,0).toFixed(3)+' ETH'; $('bFired').textContent = firedN;
+  $('bBurn').textContent = history.reduce((a,w)=>a+w.pot*BURN,0).toFixed(3)+' ETH'; $('bBought').textContent = history.reduce((a,w)=>a+w.buy,0).toFixed(3)+' ETH';
+  $('bCut').textContent = cutMined.toLocaleString('en-US'); $('bNods').textContent = history.length; $('bRolls').textContent = round.rollovers + 3;
+  $('ledger').innerHTML = history.slice().reverse().map((w,i) => { const c = bySym[w.sym]; const n = history.length - i; return `<tr><td class="mono">#${String(n).padStart(4,'0')}</td><td class="mono">${(70660000 + n*2400).toLocaleString('en-US')}</td><td class="c"><img src="${c.logo}" alt="">$${w.sym}</td><td class="num">${w.backers}</td><td class="num">${fmtE(w.pot)}</td><td class="num">${fmtE(w.buy)} · ${fmtTok(w.tokens)}</td><td class="${w.score?'sc':'mono'} num">${w.score?'+'+fmtE(w.score):'—'}</td><td class="mono">${4200000 + n*37}</td><td class="mono">${hhmm(w.t)}</td></tr>`; }).join('');
   $('histLbl').textContent = history.length + ' nods · ' + fmtE(history.reduce((a,w)=>a+w.buy,0)) + ' bought · ' + fmtE(history.reduce((a,w)=>a+w.pot*BURN,0)) + ' of PONS burned';
 }
 function flashRow(sym){ const r = document.querySelector(`.row[data-sym="${sym}"]`); if (r){ r.classList.remove('flash'); void r.offsetWidth; r.classList.add('flash'); } }
@@ -378,6 +413,7 @@ async function nod(){
   drawing = false;
 }
 $('dClose').onclick = () => $('drawOv').classList.remove('on');
+$('flex').onclick = () => { const t = `TRIBUTE · the Books\n${$('bVol').textContent} of tribute · ${$('bBurn').textContent} of PONS burned · ${$('bTaste').textContent} paid to CUT · ${$('bFired').textContent} Scores fired\nhttps://coansss1.github.io/ponsluck/`; navigator.clipboard && navigator.clipboard.writeText(t).then(()=>{ $('flex').textContent='copied'; setTimeout(()=>$('flex').textContent='flex these stats',1500); }); };
 $('skip').onclick = () => { if (total() < MIN_POT) addGold(MIN_POT - total() + 0.05, false); nod(); };
 $('envelope').onclick = () => addGold(0.1, true);
 
